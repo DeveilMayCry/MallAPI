@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using MallAPI.DataModel.Response;
 using MallAPI.Filter;
+using MallAPI.Formatter;
 using MallAPI.Model;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,16 +31,20 @@ namespace MallAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(option=> option.Filters.Add<ExceptionHandlerAttribute>()).ConfigureApiBehaviorOptions(options =>
-            {
-                options.InvalidModelStateResponseFactory = context =>
-                {
-                    var errors = context.ModelState;
-                    var errorMsgs= errors.Values.Select(v => v.Errors.First().ErrorMessage);
-                    var msg = string.Join('|',errorMsgs);
-                    return new BadRequestObjectResult(new Response(Enum.ResultEnum.Fail, msg));
-                };
-            });
+            services.AddControllers(option => option.Filters.Add<ExceptionHandlerAttribute>()).ConfigureApiBehaviorOptions(options =>
+             {
+                 options.InvalidModelStateResponseFactory = context =>
+                 {
+                     var errors = context.ModelState;
+                     var errorMsgs = errors.Values.Select(v => v.Errors.First().ErrorMessage);
+                     var msg = string.Join('|', errorMsgs);
+                     return new BadRequestObjectResult(new Response(Enum.ResultEnum.Fail, msg));
+                 };
+             })
+             .AddJsonOptions(configure => {
+                 //格式化json数据中的datetime
+                 configure.JsonSerializerOptions.Converters.Add(new DatetimeJsonConverter());
+             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
