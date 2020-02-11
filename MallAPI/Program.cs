@@ -28,7 +28,7 @@ namespace MallAPI
                         configuration
                         .MinimumLevel.Warning()
                         // 日志调用类命名空间如果以 Microsoft 开头，覆盖日志输出最小级别为 Information
-                        .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                        .MinimumLevel.Override("Microsoft", LogEventLevel.Debug)
                         .Enrich.FromLogContext()
                         // 配置日志输出到控制台
                         .WriteTo.Console()

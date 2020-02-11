@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace MallAPI.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
@@ -22,6 +23,9 @@ namespace MallAPI.Controllers
             _product = product;
         }
 
+        /// <summary>
+        /// 产品列表
+        /// </summary>
         [HttpGet]
         public Response Get([FromQuery]PageParams pageParams)
         {

@@ -48,7 +48,7 @@ namespace MallAPI.Model
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
                 int start = (pageNum - 1) * pageSize;
-                var sql = $"SELECT * FROM MYSQL.PRODUCT1 ORDER BY CREATETIME DESC LIMIT {start},{pageSize}";
+                var sql = $"SELECT * FROM MALL.PRODUCT ORDER BY CREATETIME DESC LIMIT {start},{pageSize}";
                 return conn.Query<Product>(sql).ToList();
             }
         }
