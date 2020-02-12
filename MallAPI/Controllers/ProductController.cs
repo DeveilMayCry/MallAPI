@@ -28,7 +28,7 @@ namespace MallAPI.Controllers
         /// 产品列表
         /// </summary>
         [HttpGet]
-        [Authorize(Roles ="1,2")]
+        [Authorize]
         public Response Get([FromQuery]PageParams pageParams)
         {
             var products = _product.GetProducts(pageParams.PageSize,pageParams.PageNum);

@@ -41,7 +41,8 @@ namespace MallAPI.Controllers
                 return new Response(Enum.ResultEnum.Fail, "账号或密码不正确");
             }
 
-            var credential = new SigningCredentials(new RsaSecurityKey(new RSACryptoServiceProvider(2048)), SecurityAlgorithms.RsaSha256Signature);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettiing:IssuerSigningKey"]));
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name,currentUser.Name)
@@ -54,7 +55,8 @@ namespace MallAPI.Controllers
                 claims,
                 null,
                 DateTime.Now.AddMinutes(30),
-                credential);
+                new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+                ) ;
             return new Response(new JwtSecurityTokenHandler().WriteToken(token));
 
         }
