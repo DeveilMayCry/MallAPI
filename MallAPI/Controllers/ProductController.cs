@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MallAPI.DataModel.Requset;
 using MallAPI.DataModel.Response;
 using MallAPI.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace MallAPI.Controllers
         /// 产品列表
         /// </summary>
         [HttpGet]
+        [Authorize(Roles ="1,2")]
         public Response Get([FromQuery]PageParams pageParams)
         {
             var products = _product.GetProducts(pageParams.PageSize,pageParams.PageNum);
