@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MallAPI.DataModel.Requset
+namespace MallAPI.DTO.Requset
 {
     public class PageParams
     {

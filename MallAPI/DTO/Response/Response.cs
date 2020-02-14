@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MallAPI.DataModel.Response
+namespace MallAPI.DTO.Response
 {
     public class Response
     {

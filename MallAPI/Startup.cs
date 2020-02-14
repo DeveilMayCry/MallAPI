@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using MallAPI.DataModel.Response;
+using MallAPI.DTO.Response;
 using MallAPI.Filter;
 using MallAPI.Formatter;
 using MallAPI.Model;
@@ -19,6 +19,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace MallAPI
 {
@@ -62,6 +64,25 @@ namespace MallAPI
                      ValidIssuer = Configuration["JwtSettiing:ValidIssuer"],
                      ValidAudience = Configuration["JwtSettiing:ValidAudience"],
                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSettiing:IssuerSigningKey"]))
+                 };
+
+                 option.Events = new JwtBearerEvents
+                 {
+                     //此处为权限验证失败后触发的事件
+                     OnChallenge = context =>
+                     {
+                         //此处代码为终止.Net Core默认的返回类型和数据结果，这个很重要哦，必须
+                         context.HandleResponse();
+                         //自定义自己想要返回的数据结果，我这里要返回的是Json对象，通过引用Newtonsoft.Json库进行转换
+                         var payload = JsonConvert.SerializeObject(new Response(Enum.ResultEnum.Fail,"权限不足"));
+                         //自定义返回的数据类型
+                         context.Response.ContentType = "application/json";
+                         //自定义返回状态码，默认为401 我这里改成 200
+                         context.Response.StatusCode = StatusCodes.Status200OK;
+                         //输出Json数据结果
+                         context.Response.WriteAsync(payload);
+                         return Task.CompletedTask;
+                     }
                  };
              });
 

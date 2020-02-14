@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace MallAPI.DataModel.Requset
+namespace MallAPI.DTO.Requset
 {
     public class UserParam
     {

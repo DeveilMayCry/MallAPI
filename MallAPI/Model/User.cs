@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using MallAPI.DataModel.Requset;
+using MallAPI.DTO.Requset;
 using MallAPI.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
