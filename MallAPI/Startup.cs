@@ -21,6 +21,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using MallAPI.Authorization;
 
 namespace MallAPI
 {
@@ -63,7 +65,9 @@ namespace MallAPI
                  {
                      ValidIssuer = Configuration["JwtSettiing:ValidIssuer"],
                      ValidAudience = Configuration["JwtSettiing:ValidAudience"],
-                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSettiing:IssuerSigningKey"]))
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtSettiing:IssuerSigningKey"])),
+                     //过期时间 = expire+clockskew
+                     ClockSkew = TimeSpan.FromSeconds(20)
                  };
 
                  option.Events = new JwtBearerEvents
@@ -74,7 +78,7 @@ namespace MallAPI
                          //此处代码为终止.Net Core默认的返回类型和数据结果，这个很重要哦，必须
                          context.HandleResponse();
                          //自定义自己想要返回的数据结果，我这里要返回的是Json对象，通过引用Newtonsoft.Json库进行转换
-                         var payload = JsonConvert.SerializeObject(new Response(Enum.ResultEnum.Fail,"权限不足"));
+                         var payload = JsonConvert.SerializeObject(new Response(Enum.ResultEnum.Fail,"请先登录"));
                          //自定义返回的数据类型
                          context.Response.ContentType = "application/json";
                          //自定义返回状态码，默认为401 我这里改成 200
@@ -82,7 +86,20 @@ namespace MallAPI
                          //输出Json数据结果
                          context.Response.WriteAsync(payload);
                          return Task.CompletedTask;
-                     }
+                     },
+                     //此处为授权失败后触发的事件
+                     OnForbidden = context =>
+                     {
+                         //自定义自己想要返回的数据结果，我这里要返回的是Json对象，通过引用Newtonsoft.Json库进行转换
+                         var payload = JsonConvert.SerializeObject(new Response(Enum.ResultEnum.Fail, "权限不足"));
+                         //自定义返回的数据类型
+                         context.Response.ContentType = "application/json";
+                         //自定义返回状态码，默认为401 我这里改成 200
+                         context.Response.StatusCode = StatusCodes.Status200OK;
+                         //输出Json数据结果
+                         context.Response.WriteAsync(payload);
+                         return Task.CompletedTask;
+                     },
                  };
              });
 
@@ -124,6 +141,9 @@ namespace MallAPI
 
             services.AddTransient<Product>();
             services.AddTransient<User>();
+            //注入授权处理器
+            services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+            services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         }
 

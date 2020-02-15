@@ -45,7 +45,8 @@ namespace MallAPI.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name,currentUser.Name)
+                new Claim(ClaimTypes.Name,currentUser.Name),
+                new Claim("userId",currentUser.ID.ToString())
             };
             claims.AddRange(currentUser.RolesId.Split(',').Select(u => new Claim(ClaimTypes.Role, u)));
 

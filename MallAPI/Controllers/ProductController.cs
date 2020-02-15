@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MallAPI.Authorization;
 using MallAPI.DTO.Requset;
 using MallAPI.DTO.Response;
 using MallAPI.Model;
@@ -28,7 +29,7 @@ namespace MallAPI.Controllers
         /// 产品列表
         /// </summary>
         [HttpGet]
-        [Authorize(Roles ="1")]
+        [PermissionAuthorize("1")]
         public Response Get([FromQuery]PageParams pageParams)
         {
             var products = _product.GetProducts(pageParams.PageSize,pageParams.PageNum);
