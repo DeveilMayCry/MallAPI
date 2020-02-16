@@ -8,18 +8,13 @@ namespace MallAPI.Authorization
 {
     public class PermissionAuthorizeAttribute : AuthorizeAttribute
     {
-        private string _id;
-
-        public string PermissionId 
+        public PermissionAuthorizeAttribute()
         {
-            get { return _id; }
-
-            set { Policy = value; }
         }
 
         public PermissionAuthorizeAttribute(string permissionId)
         {
-            PermissionId = permissionId;
+            Policy = permissionId;
         }
 
     }

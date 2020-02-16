@@ -9,9 +9,13 @@ namespace MallAPI.Authorization
 {
     public class PermissionPolicyProvider : IAuthorizationPolicyProvider
     {
+        /// <summary>
+        /// 不指定授权策略名称时，使用简单授权
+        /// </summary>
+        /// <returns></returns>
         public Task<AuthorizationPolicy> GetDefaultPolicyAsync()
         {
-            return Task.FromResult<AuthorizationPolicy>(null);
+           return Task.FromResult(new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme).RequireAuthenticatedUser().Build());
         }
 
         public Task<AuthorizationPolicy> GetFallbackPolicyAsync()
@@ -19,6 +23,11 @@ namespace MallAPI.Authorization
             return Task.FromResult<AuthorizationPolicy>(null);
         }
 
+        /// <summary>
+        /// 根据策略名称，动态生成策略
+        /// </summary>
+        /// <param name="policyName"></param>
+        /// <returns></returns>
         public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
         {
             var permissionId = policyName;

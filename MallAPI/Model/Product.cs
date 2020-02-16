@@ -43,15 +43,48 @@ namespace MallAPI.Model
         /// </summary>
         public string MainImage { get; set; }
 
+        /// <summary>
+        /// 获取所有产品
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNum"></param>
+        /// <returns></returns>
         public List<Product> GetProducts(int pageSize = 10, int pageNum = 1)
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
                 int start = (pageNum - 1) * pageSize;
-                var sql = $"SELECT * FROM MALL.PRODUCT WHERE STATUS = 0 ORDER BY CREATETIME DESC LIMIT {start},{pageSize}";
-                return conn.Query<Product>(sql).ToList();
+                var sql = $"SELECT * FROM MALL.PRODUCT WHERE STATUS = 0 ORDER BY CREATETIME DESC LIMIT @start,@pageSize";
+                return conn.Query<Product>(sql, new { start, pageSize }).ToList();
             }
         }
 
+        /// <summary>
+        /// 根据id查询产品
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Product GetProductById(int id)
+        {
+            using (var conn = new MySqlConnection(_configuration["ConnectString"]))
+            {
+                var sql = $"SELECT * FROM MALL.PRODUCT WHERE ID = @id AND STATUS = 0 ";
+                return conn.QueryFirstOrDefault<Product>(sql, new { id });
+            }
+        }
+
+        /// <summary>
+        /// 根据名称模糊查询产品
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public List<Product> GetProductsByName(string name)
+        {
+            using (var conn = new MySqlConnection(_configuration["ConnectString"]))
+            {
+                var sql = $"SELECT * FROM MALL.PRODUCT WHERE NAME like @name AND STATUS = 0 ";
+                return conn.Query<Product>(sql, new { name = $"%{name}%" }).ToList();
+            }
+        }
     }
 }
