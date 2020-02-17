@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MallAPI.Authorization;
@@ -19,10 +20,12 @@ namespace MallAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private Product _product = null;
-        public ProductController(Product product)
+        private Product _product ;
+        private IConfiguration _configuration;
+        public ProductController(Product product,IConfiguration configuration)
         {
             _product = product;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -42,7 +45,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("id/{id}")]
+        [HttpGet("GetProductById")]
         public Response GetProductById(int id)
         {
             var product = _product.GetProductById(id);
@@ -58,7 +61,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        [HttpGet("name/{name}")]
+        [HttpGet("GetProductByName")]
         public Response GetProductByName(string name)
         {
             var products = _product.GetProductsByName(name);
@@ -67,6 +70,34 @@ namespace MallAPI.Controllers
                 return new Response(products);
             }
             return new Response(Enum.ResultEnum.Fail, "未找到商品");
+        }
+
+        /// <summary>
+        /// 更新商品图片
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPut("upload/{id}")]
+        public Response UploadImage(int id,IFormFile file)
+        {
+            //todo 引入mq处理文件保存等操作
+            if (file.Length > 0)
+            {
+                var filePath = Path.Combine(_configuration["StoredFilesPath"],
+                    Path.GetRandomFileName());
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    file.CopyTo(stream);
+                }
+                return new Response("上传成功");
+            }
+            return new Response(Enum.ResultEnum.Fail,"文件大小不能为0");
         }
     }
 }

@@ -107,7 +107,6 @@ namespace MallAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description = "在下框中输入请求头中需要添加Jwt授权Token：Bearer Token",
