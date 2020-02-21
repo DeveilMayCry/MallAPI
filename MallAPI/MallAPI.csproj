@@ -9,9 +9,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="logs\**" />
+    <Compile Remove="uploadfiles\**" />
     <Content Remove="logs\**" />
+    <Content Remove="uploadfiles\**" />
     <EmbeddedResource Remove="logs\**" />
+    <EmbeddedResource Remove="uploadfiles\**" />
     <None Remove="logs\**" />
+    <None Remove="uploadfiles\**" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="ehofodca.vps~" />
@@ -34,6 +38,10 @@
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rabbitmq\Rabbitmq.csproj" />
   </ItemGroup>
 
 

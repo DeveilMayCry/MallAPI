@@ -23,6 +23,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using MallAPI.Authorization;
+using MallAPI.MessageMQ;
+using Rabbitmq;
 
 namespace MallAPI
 {
@@ -143,6 +145,12 @@ namespace MallAPI
             //注入授权处理器
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+
+            //注入rabbitmq
+            services.AddSingleton<Publisher, MessagePublisher>();
+            services.AddSingleton<Comsumer, MessageComsumer>();
+            services.AddHostedService<MessageComsumer>();
+            services.AddHostedService<MessagePublisher>();
 
         }
 

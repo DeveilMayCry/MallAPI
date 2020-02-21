@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using MallAPI.Authorization;
 using MallAPI.DTO.Requset;
@@ -12,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Rabbitmq;
 
 namespace MallAPI.Controllers
 {
@@ -20,12 +23,14 @@ namespace MallAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private Product _product ;
+        private Product _product;
         private IConfiguration _configuration;
-        public ProductController(Product product,IConfiguration configuration)
+        private Publisher _publisher;
+        public ProductController(Product product, IConfiguration configuration, Publisher publisher)
         {
             _product = product;
             _configuration = configuration;
+            _publisher = publisher;
         }
 
         /// <summary>
@@ -78,26 +83,29 @@ namespace MallAPI.Controllers
         /// <param name="id"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [PermissionAuthorize("1")]
         [HttpPut("upload/{id}")]
-        public Response UploadImage(int id,IFormFile file)
+        public Response UploadImage(int id, [Required]IFormFile file)
         {
             //todo 引入mq处理文件保存等操作
-            if (file.Length > 0)
+            if (file.Length == 0)
             {
-                var filePath = Path.Combine(_configuration["StoredFilesPath"],
-                    Path.GetRandomFileName());
-                if (!Directory.Exists(filePath))
-                {
-                    Directory.CreateDirectory(filePath);
-                }
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    file.CopyTo(stream);
-                }
-                return new Response("上传成功");
+                return new Response(Enum.ResultEnum.Fail, "文件大小不能为0");
             }
-            return new Response(Enum.ResultEnum.Fail,"文件大小不能为0");
+            SaveFile(file);
+            return new Response("上传成功");
         }
+
+
+        private void SaveFile(IFormFile file)
+        {
+            using (var fileStream = file.OpenReadStream())
+            {
+                var bytes = new byte[fileStream.Length];
+                fileStream.Read(bytes, 0, bytes.Length);
+                _publisher.Publish((file.FileName, bytes));
+            }
+        }
+
     }
 }
