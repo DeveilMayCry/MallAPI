@@ -1,6 +1,9 @@
 ﻿using Dapper;
+using MallAPI.DTO.Requset;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using Rabbitmq;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,10 +14,12 @@ namespace MallAPI.Model
 {
     public class Product : BaseModel
     {
-        private IConfiguration _configuration = null;
-        public Product(IConfiguration configuration)
+        private IConfiguration _configuration;
+        private Publisher _publisher;
+        public Product(IConfiguration configuration, Publisher publisher)
         {
             _configuration = configuration;
+            _publisher = publisher;
         }
 
         public Product()
@@ -42,6 +47,16 @@ namespace MallAPI.Model
         /// 图片
         /// </summary>
         public string MainImage { get; set; }
+
+        /// <summary>
+        /// 详情图片
+        /// </summary>
+        public string SubImages { get; set; }
+
+        /// <summary>
+        /// 库存
+        /// </summary>
+        public int Stock { get; set; }
 
         /// <summary>
         /// 获取所有产品
@@ -86,5 +101,48 @@ namespace MallAPI.Model
                 return conn.Query<Product>(sql, new { name = $"%{name}%" }).ToList();
             }
         }
+
+        /// <summary>
+        /// 更新商品图片
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="file"></param>
+        public void UpdateImage(int id, IFormFile file)
+        {
+            using (var conn = new MySqlConnection(_configuration["ConnectString"]))
+            {
+                using (var fileStream = file.OpenReadStream())
+                {
+                    var bytes = new byte[fileStream.Length];
+                    fileStream.Read(bytes, 0, bytes.Length);
+                    _publisher.Publish((file.FileName, bytes));
+                }
+                var sql = $"UPDATE MALL.PRODUCT SET MAINIMAGE = @fileName WHERE ID = @id";
+                int result = conn.Execute(sql, new { id, fileName = file.FileName });
+                if (result == 0)
+                {
+                    throw new Exception("商品不存在");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 上下架商品
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="status"></param>
+        public void SetSaleStatus(StatusParam param)
+        {
+            using (var conn = new MySqlConnection(_configuration["ConnectString"]))
+            {
+                var sql = "UPDATE MALL.PRODUCT SET STATUS =@status WHERE ID= @id ";
+                var result = conn.Execute(sql, new { status= param.Status, id=param.ID });
+                if(result == 0)
+                {
+                    throw new Exception("商品不存在");
+                }
+            }
+        }
+
     }
 }

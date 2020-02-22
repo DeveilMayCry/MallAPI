@@ -31,7 +31,7 @@ namespace MallAPI.Authorization
             //从数据库读取权限
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                var sql = $"SELECT 1 FROM mall.user u INNER JOIN mall.userandrole r ON u.id = r.userId INNER JOIN mall.roleandpermission p on p.roleId =r.roleId WHERE u.id = {userId} AND p.permissionId ={permissionId}";
+                var sql = $"SELECT 1 FROM mall.user u INNER JOIN mall.userandrole r ON u.id = r.userId INNER JOIN mall.roleandpermission p on p.roleId =r.roleId WHERE u.id = {userId} AND p.permissionId ={permissionId} and p.status = 0 and u.status=0";
                 var result = conn.ExecuteScalar(sql);
                 if (result != null)
                 {

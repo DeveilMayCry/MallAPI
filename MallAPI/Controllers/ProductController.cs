@@ -83,7 +83,7 @@ namespace MallAPI.Controllers
         /// <param name="id"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        [PermissionAuthorize("1")]
+        [PermissionAuthorize("2")]
         [HttpPut("upload/{id}")]
         public Response UploadImage(int id, [Required]IFormFile file)
         {
@@ -92,20 +92,22 @@ namespace MallAPI.Controllers
             {
                 return new Response(Enum.ResultEnum.Fail, "文件大小不能为0");
             }
-            SaveFile(file);
+           
+            _product.UpdateImage(id, file);
             return new Response("上传成功");
         }
 
-
-        private void SaveFile(IFormFile file)
+        /// <summary>
+        /// 商品上下架
+        /// </summary>
+        /// <param name="param">Status：0-上架，1-下架</param>
+        /// <returns></returns>
+        [PermissionAuthorize("3")]
+        [HttpPut("SetSaleStatus")]
+        public Response SetSaleStatus(StatusParam param)
         {
-            using (var fileStream = file.OpenReadStream())
-            {
-                var bytes = new byte[fileStream.Length];
-                fileStream.Read(bytes, 0, bytes.Length);
-                _publisher.Publish((file.FileName, bytes));
-            }
+            _product.SetSaleStatus(param);
+            return new Response("操作成功");
         }
-
     }
 }
