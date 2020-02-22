@@ -102,12 +102,26 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param">Status：0-上架，1-下架</param>
         /// <returns></returns>
-        [PermissionAuthorize("3")]
+        //[PermissionAuthorize("3")]
+        [AllowAnonymous]
         [HttpPut("SetSaleStatus")]
         public Response SetSaleStatus(StatusParam param)
         {
             _product.SetSaleStatus(param);
             return new Response("操作成功");
+        }
+
+        /// <summary>
+        /// 更新商品部分信息
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPut("UpdateProduct")]
+        public Response UpdateProduct(ProductParam param)
+        {
+            _product.UpdateProduct(param);
+            return new Response("更新商品信息成功");
         }
     }
 }

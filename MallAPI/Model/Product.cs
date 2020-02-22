@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MallAPI.DTO.Requset;
+using MallAPI.lib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
@@ -57,6 +58,11 @@ namespace MallAPI.Model
         /// 库存
         /// </summary>
         public int Stock { get; set; }
+
+        /// <summary>
+        /// 价格
+        /// </summary>
+        public decimal Price { get; set; }
 
         /// <summary>
         /// 获取所有产品
@@ -144,5 +150,20 @@ namespace MallAPI.Model
             }
         }
 
+        /// <summary>
+        /// 更新商品部分信息
+        /// </summary>
+        /// <param name="param"></param>
+        public void UpdateProduct(ProductParam param)
+        {
+            using (var conn = new MySqlConnection(_configuration["ConnectString"]))
+            {
+                var result = conn.Update("MALL.PRODUCT", param.ID.Value, param);
+                if (result == 0)
+                {
+                    throw new Exception("商品不存在");
+                }
+            }
+        }
     }
 }

@@ -9,10 +9,10 @@ namespace MallAPI.DTO.Requset
     public class StatusParam
     {
         [Required]
-        public int ID { get; set; }
+        public int? ID { get; set; }
 
         [Required]
         [Range(0,1,ErrorMessage ="0-上架，1-下架，请填写0或1")]
-        public int Status { get; set; }
+        public int? Status { get; set; }
     }
 }
