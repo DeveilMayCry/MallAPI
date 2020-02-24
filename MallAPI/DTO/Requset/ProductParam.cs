@@ -18,7 +18,7 @@ namespace MallAPI.DTO.Requset
         /// 品类id
         /// </summary>
         [Range(0,int.MaxValue)]
-        public int CategoryID { get; set; }
+        public int? CategoryID { get; set; }
 
 
         /// <summary>
@@ -30,7 +30,6 @@ namespace MallAPI.DTO.Requset
         /// <summary>
         /// 副标题
         /// </summary>
-        [Required]
         public string Subtitle { get; set; }
 
         /// <summary>
@@ -46,12 +45,12 @@ namespace MallAPI.DTO.Requset
         /// <summary>
         /// 库存
         /// </summary>
-        public int Stock { get; set; }
+        public int? Stock { get; set; }
 
         /// <summary>
         /// 价格
         /// </summary>
         [Range(0,double.MaxValue)]
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
     }
 }

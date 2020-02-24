@@ -19,21 +19,7 @@ namespace MallAPI.lib
             var conditions = new List<string>();
             properties.ForEach(item =>
             {
-                if (item.PropertyType == typeof(int) )
-                {
-                    if (!item.GetValue(data).ToString().Equals(default(int).ToString()))
-                    {
-                        conditions.Add($" {item.Name} = '{item.GetValue(data)}'");
-                    }
-                }
-                else if(item.PropertyType == typeof(decimal))
-                {
-                    if (!item.GetValue(data).ToString().Equals(default(decimal).ToString()))
-                    {
-                        conditions.Add($" {item.Name} = '{item.GetValue(data)}'");
-                    }
-                }
-                else if (item.GetValue(data) != default)
+                if (item.GetValue(data) != null)
                 {
                     conditions.Add($" {item.Name} = '{item.GetValue(data)}'");
                 }
