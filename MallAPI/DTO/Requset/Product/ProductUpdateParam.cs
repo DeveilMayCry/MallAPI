@@ -4,22 +4,27 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MallAPI.DTO.Requset
+namespace MallAPI.DTO.Product.Requset
 {
-    public class ProductInsertParam
+    public class ProductUpdateParam
     {
+
+        [Required]
+        [Range(1,int.MaxValue)]
+        public int? ID { get; set; }
+
+
         /// <summary>
         /// 品类id
         /// </summary>
-        [Range(0, int.MaxValue)]
-        [Required]
+        [Range(0,int.MaxValue)]
         public int? CategoryID { get; set; }
+
 
         /// <summary>
         /// 商品名
         /// </summary>
         [MinLength(1)]
-        [Required]
         public string Name { get; set; }
 
         /// <summary>
@@ -30,7 +35,6 @@ namespace MallAPI.DTO.Requset
         /// <summary>
         /// 图片
         /// </summary>
-        [Required]
         public string MainImage { get; set; }
 
         /// <summary>
@@ -41,14 +45,12 @@ namespace MallAPI.DTO.Requset
         /// <summary>
         /// 库存
         /// </summary>
-        [Required]
         public int? Stock { get; set; }
 
         /// <summary>
         /// 价格
         /// </summary>
-        [Range(0, double.MaxValue)]
-        [Required]
+        [Range(0,double.MaxValue)]
         public decimal? Price { get; set; }
     }
 }

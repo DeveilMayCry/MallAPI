@@ -1,5 +1,7 @@
 ﻿using Dapper;
+using MallAPI.DTO.Product.Requset;
 using MallAPI.DTO.Requset;
+using MallAPI.DTO.Requset.Product;
 using MallAPI.lib;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -17,13 +19,13 @@ namespace MallAPI.Model
     {
         private IConfiguration _configuration;
         private Publisher _publisher;
+        private Category _category;
         private readonly string _productTableName = "MALL.PRODUCT";
-        private readonly string _categoryTableName = "MALL.CATEGORY";
-        
-        public Product(IConfiguration configuration, Publisher publisher)
+        public Product(IConfiguration configuration, Publisher publisher,Category category)
         {
             _configuration = configuration;
             _publisher = publisher;
+            _category = category;
         }
 
         public Product()
@@ -35,7 +37,7 @@ namespace MallAPI.Model
         /// <summary>
         /// 品类id
         /// </summary>
-        public int CategoryID { get; set; }
+        public long CategoryID { get; set; }
 
         /// <summary>
         /// 商品名
@@ -161,7 +163,7 @@ namespace MallAPI.Model
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                if (param.CategoryID.HasValue && !ExistCategory(param.CategoryID.Value, conn))
+                if (param.CategoryID.HasValue && !_category.ExistCategory(param.CategoryID.Value))
                 {
                     throw new Exception("CategoryID不存在");
                 }
@@ -175,17 +177,6 @@ namespace MallAPI.Model
         }
 
         /// <summary>
-        /// 是否存在category
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="conn"></param>
-        private bool ExistCategory(int id, MySqlConnection conn)
-        {
-            return conn.ExecuteScalar($"select 1 from {_categoryTableName} where id = @id and status = 0", new { id }) != null;
-
-        }
-
-        /// <summary>
         /// 新增商品
         /// </summary>
         /// <param name="param"></param>
@@ -193,7 +184,7 @@ namespace MallAPI.Model
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                if (!ExistCategory(param.CategoryID.Value, conn))
+                if (!_category.ExistCategory(param.CategoryID.Value))
                 {
                     throw new Exception("CategoryID不存在");
                 }

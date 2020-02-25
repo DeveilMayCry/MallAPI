@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MallAPI.Authorization;
+﻿using MallAPI.Authorization;
+using MallAPI.DTO.Product.Requset;
 using MallAPI.DTO.Requset;
+using MallAPI.DTO.Requset.Product;
 using MallAPI.DTO.Response;
 using MallAPI.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -15,10 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Rabbitmq;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace MallAPI.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
