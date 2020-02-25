@@ -102,8 +102,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param">Status：0-上架，1-下架</param>
         /// <returns></returns>
-        //[PermissionAuthorize("3")]
-        [AllowAnonymous]
+        [PermissionAuthorize("3")]
         [HttpPut("SetSaleStatus")]
         public Response SetSaleStatus(StatusParam param)
         {
@@ -116,12 +115,25 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [AllowAnonymous]
+        [PermissionAuthorize("2")]
         [HttpPut("UpdateProduct")]
-        public Response UpdateProduct(ProductParam param)
+        public Response UpdateProduct(ProductUpdateParam param)
         {
             _product.UpdateProduct(param);
             return new Response("更新商品信息成功");
+        }
+
+        /// <summary>
+        /// 新增商品
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [PermissionAuthorize("4")]
+        [HttpPost("CreateProduct")]
+        public Response CreateProduct(ProductInsertParam param)
+        {
+            _product.InsertProduct(param);
+            return new Response("操作成功"); 
         }
     }
 }

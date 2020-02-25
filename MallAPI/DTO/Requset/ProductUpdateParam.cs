@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MallAPI.DTO.Requset
 {
-    public class ProductParam
+    public class ProductUpdateParam
     {
 
         [Required]

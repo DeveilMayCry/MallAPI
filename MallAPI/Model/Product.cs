@@ -17,6 +17,9 @@ namespace MallAPI.Model
     {
         private IConfiguration _configuration;
         private Publisher _publisher;
+        private readonly string _productTableName = "MALL.PRODUCT";
+        private readonly string _categoryTableName = "MALL.CATEGORY";
+        
         public Product(IConfiguration configuration, Publisher publisher)
         {
             _configuration = configuration;
@@ -75,7 +78,7 @@ namespace MallAPI.Model
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
                 int start = (pageNum - 1) * pageSize;
-                var sql = $"SELECT * FROM MALL.PRODUCT WHERE STATUS = 0 ORDER BY CREATETIME DESC LIMIT @start,@pageSize";
+                var sql = $"SELECT * FROM {_productTableName} WHERE STATUS = 0 ORDER BY CREATETIME DESC LIMIT @start,@pageSize";
                 return conn.Query<Product>(sql, new { start, pageSize }).ToList();
             }
         }
@@ -89,7 +92,7 @@ namespace MallAPI.Model
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                var sql = $"SELECT * FROM MALL.PRODUCT WHERE ID = @id AND STATUS = 0 ";
+                var sql = $"SELECT * FROM {_productTableName} WHERE ID = @id AND STATUS = 0 ";
                 return conn.QueryFirstOrDefault<Product>(sql, new { id });
             }
         }
@@ -103,7 +106,7 @@ namespace MallAPI.Model
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                var sql = $"SELECT * FROM MALL.PRODUCT WHERE NAME like @name AND STATUS = 0 ";
+                var sql = $"SELECT * FROM {_productTableName} WHERE NAME like @name AND STATUS = 0 ";
                 return conn.Query<Product>(sql, new { name = $"%{name}%" }).ToList();
             }
         }
@@ -123,7 +126,7 @@ namespace MallAPI.Model
                     fileStream.Read(bytes, 0, bytes.Length);
                     _publisher.Publish((file.FileName, bytes));
                 }
-                var sql = $"UPDATE MALL.PRODUCT SET MAINIMAGE = @fileName WHERE ID = @id";
+                var sql = $"UPDATE {_productTableName} SET MAINIMAGE = @fileName WHERE ID = @id";
                 int result = conn.Execute(sql, new { id, fileName = file.FileName });
                 if (result == 0)
                 {
@@ -141,9 +144,9 @@ namespace MallAPI.Model
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                var sql = "UPDATE MALL.PRODUCT SET STATUS =@status WHERE ID= @id ";
-                var result = conn.Execute(sql, new { status= param.Status, id=param.ID });
-                if(result == 0)
+                var sql = $"UPDATE {_productTableName} SET STATUS =@status WHERE ID= @id ";
+                var result = conn.Execute(sql, new { status = param.Status, id = param.ID });
+                if (result == 0)
                 {
                     throw new Exception("商品不存在");
                 }
@@ -154,11 +157,48 @@ namespace MallAPI.Model
         /// 更新商品部分信息
         /// </summary>
         /// <param name="param"></param>
-        public void UpdateProduct(ProductParam param)
+        public void UpdateProduct(ProductUpdateParam param)
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                var result = conn.Update("MALL.PRODUCT", param.ID.Value, param);
+                if (param.CategoryID.HasValue && !ExistCategory(param.CategoryID.Value, conn))
+                {
+                    throw new Exception("CategoryID不存在");
+                }
+
+                var result = conn.Update(_productTableName, param.ID.Value, param);
+                if (result == 0)
+                {
+                    throw new Exception("商品不存在");
+                }
+            }
+        }
+
+        /// <summary>
+        /// 是否存在category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="conn"></param>
+        private bool ExistCategory(int id, MySqlConnection conn)
+        {
+            return conn.ExecuteScalar($"select 1 from {_categoryTableName} where id = @id and status = 0", new { id }) != null;
+
+        }
+
+        /// <summary>
+        /// 新增商品
+        /// </summary>
+        /// <param name="param"></param>
+        public void InsertProduct(ProductInsertParam param)
+        {
+            using (var conn = new MySqlConnection(_configuration["ConnectString"]))
+            {
+                if (!ExistCategory(param.CategoryID.Value, conn))
+                {
+                    throw new Exception("CategoryID不存在");
+                }
+
+                var result = conn.Insert("MALL.PRODUCT", param);
                 if (result == 0)
                 {
                     throw new Exception("商品不存在");
