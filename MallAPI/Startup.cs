@@ -143,6 +143,8 @@ namespace MallAPI
             services.AddTransient<Product>();
             services.AddTransient<User>();
             services.AddTransient<Category>();
+            services.AddTransient<CartProduct>();
+
             //注入授权处理器
             services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
             services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();

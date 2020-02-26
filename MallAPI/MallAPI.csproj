@@ -44,5 +44,9 @@
     <ProjectReference Include="..\Rabbitmq\Rabbitmq.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\Requset\Cart\" />
+  </ItemGroup>
+
 
 </Project>

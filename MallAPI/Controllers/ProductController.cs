@@ -15,19 +15,14 @@ using System.Linq;
 
 namespace MallAPI.Controllers
 {
-    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
     {
         private Product _product;
-        private IConfiguration _configuration;
-        private Publisher _publisher;
-        public ProductController(Product product, IConfiguration configuration, Publisher publisher)
+        public ProductController(Product product)
         {
             _product = product;
-            _configuration = configuration;
-            _publisher = publisher;
         }
 
         /// <summary>
