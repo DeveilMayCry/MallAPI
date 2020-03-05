@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authorization;
 using MallAPI.Authorization;
 using MallAPI.MessageMQ;
 using Rabbitmq;
+using MallAPI.lib;
 
 namespace MallAPI
 {
@@ -154,6 +155,9 @@ namespace MallAPI
             services.AddSingleton<Comsumer, MessageComsumer>();
             services.AddHostedService<MessageComsumer>();
             services.AddHostedService<MessagePublisher>();
+
+            //×¢Èëredis
+            services.AddSingleton<Redis.Redis, RedisWrapper>();
 
         }
 

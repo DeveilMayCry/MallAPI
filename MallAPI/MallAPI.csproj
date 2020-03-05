@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rabbitmq\Rabbitmq.csproj" />
+    <ProjectReference Include="..\Redis\Redis.csproj" />
   </ItemGroup>
 
   <ItemGroup>

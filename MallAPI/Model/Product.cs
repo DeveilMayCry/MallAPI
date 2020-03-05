@@ -70,6 +70,11 @@ namespace MallAPI.Model
         public decimal Price { get; set; }
 
         /// <summary>
+        /// 详情
+        /// </summary>
+        public string Detail { get; set; }
+
+        /// <summary>
         /// 获取所有产品
         /// </summary>
         /// <param name="pageSize"></param>
