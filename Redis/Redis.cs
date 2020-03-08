@@ -20,7 +20,7 @@ namespace Redis
             {
                 if (_connection is null || _connection.IsConnected)
                 {
-                    _connection = new Lazy<ConnectionMultiplexer>(() => ConnectionMultiplexer.Connect(RedisConnectStr)).Value;
+                    _connection =  ConnectionMultiplexer.Connect(RedisConnectStr);
                 }
                 return _connection;
             }

@@ -44,7 +44,7 @@ namespace MallAPI.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [PermissionAuthorize("6")]
-        [HttpPut("SetCategoryName")]
+        [HttpPatch("SetCategoryName")]
         public Response SetCategoryName(CategoryUpdateParam param)
         {
             _category.SetCategoryName(param);

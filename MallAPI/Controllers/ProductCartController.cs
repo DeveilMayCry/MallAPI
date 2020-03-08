@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using MallAPI.Authorization;
+﻿using MallAPI.Authorization;
 using MallAPI.DTO.Response;
 using MallAPI.Model;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 
 namespace MallAPI.Controllers
 {
@@ -29,7 +22,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [PermissionAuthorize("8")]
-        [HttpGet("GetCartProducts")]
+        [HttpGet]
         public Response GetCartProducts()
         {
             var userId = User.FindFirst("userId").Value;
@@ -42,7 +35,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [PermissionAuthorize("8")]
-        [HttpGet("GetProductCount")]
+        [HttpGet("totalCount")]
         public Response GetProductCount()
         {
             var userId = User.FindFirst("userId").Value;
@@ -56,7 +49,7 @@ namespace MallAPI.Controllers
         /// <param name="productId"></param>
         /// <returns></returns>
         [PermissionAuthorize("9")]
-        [HttpPost("IncresrProduct")]
+        [HttpPatch("{productId}")]
         public Response IncresrProduct([Required]long? productId)
         {
             var userId = User.FindFirst("userId").Value;
@@ -71,7 +64,7 @@ namespace MallAPI.Controllers
         /// <param name="select"></param>
         /// <returns></returns>
         [PermissionAuthorize("9")]
-        [HttpPost("InsertProductToCart")]
+        [HttpPost]
         public Response InsertProductToCart([Required]long? productId, [Required]bool? select)
         {
             var userId = User.FindFirst("userId").Value;
@@ -85,7 +78,7 @@ namespace MallAPI.Controllers
         /// <param name="productId"></param>
         /// <returns></returns>
         [PermissionAuthorize("9")]
-        [HttpDelete("RemoveProductFromCart")]
+        [HttpDelete("{productId}")]
         public Response RemoveProductFromCart([Required]long? productId)
         {
             var userId = User.FindFirst("userId").Value;

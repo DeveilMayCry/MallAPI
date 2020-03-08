@@ -28,8 +28,8 @@ namespace MallAPI.Controllers
         /// <summary>
         /// 产品列表
         /// </summary>
-        [HttpGet]
-        [PermissionAuthorize("1")]
+        [HttpGet("~/api/products")]
+        // [PermissionAuthorize("1")]
         public Response Get([FromQuery]PageParams pageParams)
         {
             var products = _product.GetProducts(pageParams.PageSize, pageParams.PageNum);
@@ -42,7 +42,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetProductById")]
+        [HttpGet("{id}")]
         public Response GetProductById(int id)
         {
             var product = _product.GetProductById(id);
@@ -58,7 +58,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        [HttpGet("GetProductByName")]
+        [HttpGet]
         public Response GetProductByName(string name)
         {
             var products = _product.GetProductsByName(name);
@@ -75,8 +75,8 @@ namespace MallAPI.Controllers
         /// <param name="id"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        [PermissionAuthorize("2")]
-        [HttpPut("upload/{id}")]
+       // [PermissionAuthorize("2")]
+        [HttpPatch("upload/{id}")]
         public Response UploadImage(int id, [Required]IFormFile file)
         {
             //todo 引入mq处理文件保存等操作
@@ -84,34 +84,23 @@ namespace MallAPI.Controllers
             {
                 return new Response(Enum.ResultEnum.Fail, "文件大小不能为0");
             }
-           
+
             _product.UpdateImage(id, file);
             return new Response("上传成功");
         }
 
-        /// <summary>
-        /// 商品上下架
-        /// </summary>
-        /// <param name="param">Status：0-上架，1-下架</param>
-        /// <returns></returns>
-        [PermissionAuthorize("3")]
-        [HttpPut("SetSaleStatus")]
-        public Response SetSaleStatus(StatusParam param)
-        {
-            _product.SetSaleStatus(param);
-            return new Response("操作成功");
-        }
+       
 
         /// <summary>
         /// 更新商品部分信息
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [PermissionAuthorize("2")]
-        [HttpPut("UpdateProduct")]
-        public Response UpdateProduct(ProductUpdateParam param)
+       // [PermissionAuthorize("2")]
+        [HttpPatch("{id:long}")]
+        public Response UpdateProduct([Required]long? id, ProductUpdateParam param)
         {
-            _product.UpdateProduct(param);
+            _product.UpdateProduct(id.Value, param);
             return new Response("更新商品信息成功");
         }
 
@@ -120,12 +109,12 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [PermissionAuthorize("4")]
-        [HttpPost("CreateProduct")]
+        //[PermissionAuthorize("4")]
+        [HttpPost]
         public Response CreateProduct(ProductInsertParam param)
         {
             _product.InsertProduct(param);
-            return new Response("操作成功"); 
+            return new Response("操作成功");
         }
     }
 }

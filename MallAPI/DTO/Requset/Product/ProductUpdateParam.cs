@@ -9,11 +9,6 @@ namespace MallAPI.DTO.Product.Requset
     public class ProductUpdateParam
     {
 
-        [Required]
-        [Range(1,int.MaxValue)]
-        public int? ID { get; set; }
-
-
         /// <summary>
         /// 品类id
         /// </summary>
@@ -52,5 +47,7 @@ namespace MallAPI.DTO.Product.Requset
         /// </summary>
         [Range(0,double.MaxValue)]
         public decimal? Price { get; set; }
+
+        public int? Status { get; set; }
     }
 }

@@ -11,7 +11,7 @@ namespace MallAPI.lib
 {
     public static class SqlConnectionExtension
     {
-        public static int Update(this MySqlConnection connection, string tableName, int id, object data)
+        public static int Update(this MySqlConnection connection, string tableName, long id, object data)
         {
             var type = data.GetType();
             var properties = type.GetProperties().ToList();

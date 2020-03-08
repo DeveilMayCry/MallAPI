@@ -164,7 +164,7 @@ namespace MallAPI.Model
         /// 更新商品部分信息
         /// </summary>
         /// <param name="param"></param>
-        public void UpdateProduct(ProductUpdateParam param)
+        public void UpdateProduct(long id,ProductUpdateParam param)
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
@@ -173,7 +173,7 @@ namespace MallAPI.Model
                     throw new Exception("CategoryID不存在");
                 }
 
-                var result = conn.Update(_productTableName, param.ID.Value, param);
+                var result = conn.Update(_productTableName, id, param);
                 if (result == 0)
                 {
                     throw new Exception("商品不存在");
