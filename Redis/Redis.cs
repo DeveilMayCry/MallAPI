@@ -18,7 +18,7 @@ namespace Redis
         {
             get
             {
-                if (_connection is null || _connection.IsConnected)
+                if (_connection is null || !_connection.IsConnected)
                 {
                     _connection =  ConnectionMultiplexer.Connect(RedisConnectStr);
                 }

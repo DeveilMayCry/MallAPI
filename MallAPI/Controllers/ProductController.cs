@@ -29,7 +29,7 @@ namespace MallAPI.Controllers
         /// 产品列表
         /// </summary>
         [HttpGet("~/api/products")]
-        // [PermissionAuthorize("1")]
+        [PermissionAuthorize("1")]
         public Response Get([FromQuery]PageParams pageParams)
         {
             var products = _product.GetProducts(pageParams.PageSize, pageParams.PageNum);
@@ -75,7 +75,7 @@ namespace MallAPI.Controllers
         /// <param name="id"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-       // [PermissionAuthorize("2")]
+        [PermissionAuthorize("2")]
         [HttpPatch("upload/{id}")]
         public Response UploadImage(int id, [Required]IFormFile file)
         {
@@ -88,7 +88,6 @@ namespace MallAPI.Controllers
             _product.UpdateImage(id, file);
             return new Response("上传成功");
         }
-
        
 
         /// <summary>
@@ -96,7 +95,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-       // [PermissionAuthorize("2")]
+        [PermissionAuthorize("2")]
         [HttpPatch("{id:long}")]
         public Response UpdateProduct([Required]long? id, ProductUpdateParam param)
         {

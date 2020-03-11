@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MallAPI.Authorization;
 using MallAPI.DTO.Requset.Category;
 using MallAPI.DTO.Response;
@@ -19,10 +20,12 @@ namespace MallAPI.Controllers
 
         private Category _category;
         private IConfiguration _configuration;
-        public CategoryController(Category category, IConfiguration configuration)
+        private IMapper _mapper;
+        public CategoryController(Category category, IConfiguration configuration, IMapper mapper)
         {
             _category = category;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -34,7 +37,8 @@ namespace MallAPI.Controllers
         [HttpGet("{id:int}")]
         public Response GetCategories(int id)
         {
-            var result= _category.GetCategories(id);
+            _category.ID = id;
+            var result = _category.GetCategories();
             return new Response(result);
         }
 
@@ -44,10 +48,11 @@ namespace MallAPI.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [PermissionAuthorize("6")]
-        [HttpPatch("SetCategoryName")]
+        [HttpPatch]
         public Response SetCategoryName(CategoryUpdateParam param)
         {
-            _category.SetCategoryName(param);
+            _mapper.Map(param, _category);
+            _category.SetCategoryName();
             return new Response("操作成功");
         }
 
@@ -57,10 +62,11 @@ namespace MallAPI.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [PermissionAuthorize("7")]
-        [HttpPost("CreateCategoryName")]
+        [HttpPost]
         public Response CreateCategoryName(CategoryInsertParam param)
         {
-            _category.InsertCategory(param);
+            _mapper.Map(param, _category);
+            _category.InsertCategory();
             return new Response("操作成功");
         }
 
@@ -73,7 +79,8 @@ namespace MallAPI.Controllers
         [HttpGet("Recursive/{id:long}")]
         public Response GetCaregoryRecursive(long id)
         {
-            var result =  _category.GetCaregoryRecursive(id);
+            _category.ID = id;
+            var result = _category.GetCaregoryRecursive();
             return new Response(result);
         }
     }

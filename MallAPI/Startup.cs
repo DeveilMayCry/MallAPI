@@ -26,6 +26,7 @@ using MallAPI.Authorization;
 using MallAPI.MessageMQ;
 using Rabbitmq;
 using MallAPI.lib;
+using AutoMapper;
 
 namespace MallAPI
 {
@@ -158,6 +159,9 @@ namespace MallAPI
 
             //◊¢»Îredis
             services.AddSingleton<Redis.Redis, RedisWrapper>();
+
+            //≈‰÷√automapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         }
 

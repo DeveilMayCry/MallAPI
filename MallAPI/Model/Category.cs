@@ -26,21 +26,20 @@ namespace MallAPI.Model
 
         public long ID { get; set; }
 
-        public long ParentId { get; set; }
+        public long? ParentId { get; set; }
 
         public string Name { get; set; }
 
         /// <summary>
         /// 根据id获取品类信息
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
-        public List<Category> GetCategories(int id)
+        public List<Category> GetCategories()
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
                 var sql = $"select * from {_tableName} where id =@id and status = 0";
-                var result = conn.Query<Category>(sql, new { id });
+                var result = conn.Query<Category>(sql, new { ID });
                 if (!result.Any())
                 {
                     throw new Exception("品类不存在");
@@ -52,18 +51,17 @@ namespace MallAPI.Model
         /// <summary>
         /// 设置品类名称
         /// </summary>
-        /// <param name="param"></param>
-        public void SetCategoryName(CategoryUpdateParam param)
+        public void SetCategoryName()
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                if (!ExistCategory(param.ID.Value))
+                if (!ExistCategory(ID))
                 {
                     throw new Exception("品类不存在");
                 }
 
                 var sql = $"Update {_tableName} set `name` = @name where id =@id and status =0";
-                var result = conn.Execute(sql, new { id = param.ID.Value, name = param.Name });
+                var result = conn.Execute(sql, new { ID, Name });
                 if (result == 0)
                 {
                     throw new Exception("操作失败");
@@ -72,23 +70,25 @@ namespace MallAPI.Model
         }
 
 
-
-        public void InsertCategory(CategoryInsertParam param)
+        /// <summary>
+        /// 新增商品目录
+        /// </summary>
+        public void InsertCategory()
         {
 
-            if (param.ParentId.HasValue && !ExistCategory(param.ParentId.Value))
+            if (ParentId.HasValue && !ExistCategory(ParentId.Value))
             {
                 throw new Exception("父级品类不存在");
             }
 
-            if (ExistCategory(param.Name))
+            if (ExistCategory(Name))
             {
                 throw new Exception("品类名称重复");
             }
 
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
-                var result = conn.Insert(_tableName, param);
+                var result = conn.Insert(_tableName, new { ParentId, Name });
                 if (result == 0)
                 {
                     throw new Exception("操作失败");
@@ -118,7 +118,7 @@ namespace MallAPI.Model
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public bool ExistCategory(string name)
+        private bool ExistCategory(string name)
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
@@ -131,9 +131,8 @@ namespace MallAPI.Model
         /// <summary>
         /// 递归获取子品类节点
         /// </summary>
-        /// <param name="id"></param>
         /// <returns></returns>
-        public List<Category> GetCaregoryRecursive(long id)
+        public List<Category> GetCaregoryRecursive()
         {
             using (var conn = new MySqlConnection(_configuration["ConnectString"]))
             {
@@ -145,7 +144,7 @@ namespace MallAPI.Model
                             )
                             select * from t1;
 ";
-                var result = conn.Query<Category>(sql, new { id }).ToList();
+                var result = conn.Query<Category>(sql, new { ID }).ToList();
                 if (result.Count == 0)
                 {
                     throw new Exception("品类不存在");
