@@ -33,7 +33,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [PermissionAuthorize("5")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.CategoryQuery)]
         [HttpGet("{id:int}")]
         public Response GetCategories(int id)
         {
@@ -47,7 +47,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [PermissionAuthorize("6")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.CategoryModify)]
         [HttpPatch]
         public Response SetCategoryName(CategoryUpdateParam param)
         {
@@ -61,7 +61,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [PermissionAuthorize("7")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.CategoryAdd)]
         [HttpPost]
         public Response CreateCategoryName(CategoryInsertParam param)
         {
@@ -75,7 +75,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [PermissionAuthorize("5")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.CategoryQuery)]
         [HttpGet("Recursive/{id:long}")]
         public Response GetCaregoryRecursive(long id)
         {

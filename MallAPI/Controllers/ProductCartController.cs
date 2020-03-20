@@ -21,7 +21,7 @@ namespace MallAPI.Controllers
         /// 查询购物车内的产品
         /// </summary>
         /// <returns></returns>
-        [PermissionAuthorize("8")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.ProductCartQuery)]
         [HttpGet]
         public Response GetCartProducts()
         {
@@ -34,7 +34,7 @@ namespace MallAPI.Controllers
         /// 查询购物车内商品总数量
         /// </summary>
         /// <returns></returns>
-        [PermissionAuthorize("8")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.ProductCartQuery)]
         [HttpGet("totalCount")]
         public Response GetProductCount()
         {
@@ -48,7 +48,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
-        [PermissionAuthorize("9")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.ProductCartAdd)]
         [HttpPatch("{productId}")]
         public Response IncresrProduct([Required]long? productId)
         {
@@ -63,7 +63,7 @@ namespace MallAPI.Controllers
         /// <param name="productId"></param>
         /// <param name="select"></param>
         /// <returns></returns>
-        [PermissionAuthorize("9")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.ProductCartAdd)]
         [HttpPost]
         public Response InsertProductToCart([Required]long? productId, [Required]bool? select)
         {
@@ -77,7 +77,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
-        [PermissionAuthorize("9")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.ProductCartAdd)]
         [HttpDelete("{productId}")]
         public Response RemoveProductFromCart([Required]long? productId)
         {
@@ -91,7 +91,7 @@ namespace MallAPI.Controllers
         /// </summary>
         /// <param name="productId"></param>
         /// <returns></returns>
-        [PermissionAuthorize("9")]
+        [PermissionAuthorize(Enum.PermissionNameEnum.ProductCartAdd)]
         [HttpGet("SelectOrNegative")]
         public Response SelectOrNegative([Required]bool? select)
         {

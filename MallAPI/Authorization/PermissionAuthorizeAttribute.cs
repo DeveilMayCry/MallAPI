@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MallAPI.Enum;
+using Microsoft.AspNetCore.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,9 @@ namespace MallAPI.Authorization
         {
         }
 
-        public PermissionAuthorizeAttribute(string permissionId)
+        public PermissionAuthorizeAttribute(PermissionNameEnum permissionId)
         {
-            Policy = permissionId;
+            Policy = ((int)permissionId).ToString();
         }
 
     }
